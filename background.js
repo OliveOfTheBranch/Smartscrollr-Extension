@@ -1,0 +1,65 @@
+const TRACKED_URL_SUBSTRING = "https://www.youtube.com/shorts/";
+
+let tickIntervalId = null;
+
+
+chrome.tabs.onActivated.addListener(() => checkAndUpdate());
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === "complete" && tab.active) {
+        checkAndUpdate();
+    }
+});
+
+chrome.windows.onFocusChanged.addListener((windowId) => {
+    // check if chrome in focus
+    if (windowId === chrome.windows.WINDOW_ID_NONE) {
+        stopTracking();
+    } else {
+        checkAndUpdate();
+    }
+});
+
+resumeIfTracking();
+
+async function checkAndUpdate() {
+    const url = await getActiveTabUrl();
+    const isTrackedPage = url !== null && url.includes(TRACKED_URL_SUBSTRING);
+    const { startTime } = await chrome.storage.local.get("startTime");
+
+    // start/stop timer
+    if (isTrackedPage && !startTime) {
+        await chrome.storage.local.set({ startTime: Date.now() });
+        startTicking();
+    } else if (!isTrackedPage && startTime) {
+        await stopTracking();
+    }
+}
+
+async function resumeIfTracking() {
+    const { startTime } = await chrome.storage.local.get("startTime");
+    if (startTime) {
+        startTicking();
+    }
+}
+
+function startTicking() {
+    if (tickIntervalId !== null) return; // already ticking
+    tickIntervalId = setInterval(async () => {
+        const { overallElapsedTime = 0 } = await chrome.storage.local.get("overallElapsedTime");
+        await chrome.storage.local.set({ overallElapsedTime: overallElapsedTime + 1 });
+    }, 1000);
+}
+
+async function stopTracking() {
+    if (tickIntervalId !== null) {
+        clearInterval(tickIntervalId);
+        tickIntervalId = null;
+    }
+    await chrome.storage.local.set({ startTime: null });
+}
+
+async function getActiveTabUrl() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    return tab ? tab.url ?? null : null;
+}

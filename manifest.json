@@ -1,0 +1,14 @@
+{
+  "name": "SmartScrollr",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": [
+    "tabs",
+    "idle",
+    "storage",
+    "host_permissions"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
