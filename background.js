@@ -1,8 +1,22 @@
 const TRACKED_URL_SUBSTRING = "https://www.youtube.com/shorts/";
+// TODO: CHANGE IF THE URL CHANGES
+const REDIRECT_URL = "http://localhost:5173"
+const REDIRECT_TIME = 10
+
+chrome.windows.onRemoved.addListener((tabId, removeInfo) => {
+    chrome.tabs.query({}, (tabs) => {
+        if (tabs.length === 0) {
+            chrome.storage.local.clear(() => {
+                console.log("All tabs were closed, clear data!")
+            });
+        }
+    });
+});
 
 let tickIntervalId = null;
 
 
+// Listeners for tabs
 chrome.tabs.onActivated.addListener(() => checkAndUpdate());
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -19,6 +33,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
         checkAndUpdate();
     }
 });
+// =========================
 
 resumeIfTracking();
 
@@ -33,6 +48,13 @@ async function checkAndUpdate() {
         startTicking();
     } else if (!isTrackedPage && startTime) {
         await stopTracking();
+    }
+
+    // Redirection to new tab
+    const { overallElapsedTime = 0 } = await chrome.storage.local.get("overallElapsedTime")
+    if (isTrackedPage && overallElapsedTime >= REDIRECT_TIME) {
+        console.log("Detected past elapsed time")
+        chrome.tabs.update({url: REDIRECT_URL})
     }
 }
 
