@@ -1,6 +1,6 @@
 const TRACKED_URL_SUBSTRING = "https://www.youtube.com/shorts/";
 // TODO: CHANGE IF THE URL CHANGES
-const REDIRECT_URL = "http://localhost:5173"
+const REDIRECT_URL = "http://localhost:5173/?redirect=true"
 const REDIRECT_TIME = 10
 
 chrome.windows.onRemoved.addListener((tabId, removeInfo) => {
