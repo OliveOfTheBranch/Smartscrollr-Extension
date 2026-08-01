@@ -6,7 +6,7 @@ const REDIRECT_TIME = 10
 chrome.windows.onRemoved.addListener((tabId, removeInfo) => {
     chrome.tabs.query({}, (tabs) => {
         if (tabs.length === 0) {
-            chrome.storage.local.clear(() => {
+            chrome.storage.local.remove("overallElapsedTime", () => {
                 console.log("All tabs were closed, clear data!")
             });
         }
