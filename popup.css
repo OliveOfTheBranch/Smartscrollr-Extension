@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Minecraft';
+  src: url('fonts/Minecraft.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+html,
+body {
+    margin: 0;
+
+    background-color: #FFFDD0;
+} 
+
+body {
+    border: 4px solid #e0deb4;
+    padding: 6px;
+}
+
+p, input, body {
+    font-family: 'Minecraft', sans-serif;
+}
+
+p, input, span {
+    padding: 6px;
+}
+
