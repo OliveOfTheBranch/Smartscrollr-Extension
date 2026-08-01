@@ -1,5 +1,15 @@
 const TRACKED_URL_SUBSTRING = "https://www.youtube.com/shorts/";
 
+chrome.windows.onRemoved.addListener((tabId, removeInfo) => {
+    chrome.tabs.query({}, (tabs) => {
+        if (tabs.length === 0) {
+            chrome.storage.local.clear(() => {
+                console.log("All tabs were closed, clear data!")
+            });
+        }
+    });
+});
+
 let tickIntervalId = null;
 
 
