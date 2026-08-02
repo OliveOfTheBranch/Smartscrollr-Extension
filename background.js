@@ -2,7 +2,7 @@
 // TODO: CHANGE IF THE URL CHANGES
 const TRACKED_URLS = ["https://www.youtube.com/shorts/", "https://www.instagram.com/reels/"];
 const REDIRECT_URL = "http://localhost:5173";
-const REDIRECT_TIME = 300;
+const REDIRECT_TIME = 5;
 
 chrome.windows.onRemoved.addListener((tabId, removeInfo) => {
     chrome.tabs.query({}, (tabs) => {
@@ -34,6 +34,14 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
         checkAndUpdate();
     }
 });
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    // Redirection to new tab
+    if ("overallElapsedTime" in changes) {
+        checkAndUpdate();
+    }
+
+})
 // =========================
 
 resumeIfTracking();
@@ -61,8 +69,6 @@ async function checkAndUpdate() {
     } else if (!isTrackedPage && startTime) {
         await stopTracking();
     }
-
-    // Redirection to new tab
     const { overallElapsedTime = 0 } = await chrome.storage.local.get("overallElapsedTime")
     if (isTrackedPage && overallElapsedTime >= REDIRECT_TIME) {
         console.log("Detected past elapsed time");
