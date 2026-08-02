@@ -5,7 +5,9 @@
 
 document.getElementById("saveButton").addEventListener('click', function() {
     const input = document.getElementById('userInput').value;
-    chrome.tabs.create({url: "http://localhost:5173/?subject=" + input}); //replace url
-    //alert('Data saved successfully!');
-    window.close();
+    if (input !== null && input.match(/.\S/gm)) {
+        chrome.tabs.create({url: "http://localhost:5173/?subject=" + input}); //replace url
+        //alert('Data saved successfully!');
+        window.close();
+    }
 })
