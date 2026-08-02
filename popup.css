@@ -26,6 +26,12 @@ p, textarea, span {
     font-size: medium;
 }
 
+textarea {
+    background-color: white;
+    border-width: 2px;
+    border-color: black;
+}
+
 #userInput {
     padding-bottom: 50px;
 }
