@@ -9,7 +9,6 @@
 html,
 body {
     margin: 0;
-
     background-color: #FFFDD0;
 } 
 
@@ -18,12 +17,13 @@ body {
     padding: 6px;
 }
 
-p, input, body {
+p, textarea, body {
     font-family: 'Minecraft', sans-serif;
 }
 
-p, input, span {
+p, textarea, span {
     padding: 6px;
+    font-size: medium;
 }
 
 #userInput {
